@@ -6,12 +6,12 @@ from nio.properties import (VersionProperty, SelectProperty, ListProperty,
                             Property, PropertyHolder)
 
 
-class IgnoreChoice(Enum):
+class Behavior(Enum):
     BLACKLIST = False
     WHITELIST = True
 
 
-class IgnoreItem(PropertyHolder):
+class SpecItem(PropertyHolder):
     item = Property(title='Attribute')
 
 
@@ -21,39 +21,42 @@ class IgnoreSignals(Block):
     the rest.
 
     Properties:
-    ignore_behavior(select): select either whitelist or blacklist behavior
-    ignore_items(list): list of incoming signal attributes to ignore
+    specify_behavior(select): select either whitelist or blacklist behavior
+    specify_attributes(list): list of incoming signal attributes to ignore
     """
 
     version = VersionProperty('1.0.0')
-    ignore_behavior = SelectProperty(IgnoreChoice, title='Ignore behavior',
-                                     default=IgnoreChoice.BLACKLIST)
-    ignore_items = ListProperty(IgnoreItem, title='Attributes to ignore',
-                                default=[])
+    specify_behavior = SelectProperty(Behavior, title='Specify behavior',
+                                      default=Behavior.BLACKLIST)
+    specify_attributes = ListProperty(SpecItem,
+                                      title='Incoming signal attributes',
+                                      default=[])
 
     def __init__(self):
-        self._ignore = None
+        self._specify_items = None
         super().__init__()
 
     def start(self):
-        self._ignore = set(ignore.item() for ignore in self.ignore_items())
+        self._specify_items = set(spec.item() for spec in
+                                  self.specify_attributes())
         super().start()
 
     def process_signals(self, signals):
-        self.logger.debug('self._ignore: {}'.format(self._ignore))
+        self.logger.debug('self._specify_items: {}'.format(self._specify_items))
         for index, signal in enumerate(signals):
             sig_dict = signal.to_dict()
 
-            specified_items = set(list(sig_dict.keys())).intersection(self._ignore)
+            specified_items = set(list(sig_dict.keys())).intersection(self._specify_items)
 
-            if self.ignore_behavior() == True:
+            if self.specify_behavior().value:
                 # if true, whitelist behavior
                 self.logger.debug('whitelisting...')
 
                 for item in sig_dict:
                     if item not in specified_items:
                         sig_dict.pop(item)
-            else:
+
+            elif not self.specify_behavior().value:
                 # if false, blacklist behavior
                 self.logger.debug('blacklisting...')
 
@@ -62,6 +65,9 @@ class IgnoreSignals(Block):
 
                 self.logger.debug('Ignoring incoming attributes: {}'
                                   .format(specified_items))
+            else:
+                self.logger.debug('invalid behavior type')
+                return
 
             # replace signal with a signal minus the bad attributes
             signals[index] = Signal(sig_dict)
