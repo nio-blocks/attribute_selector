@@ -129,7 +129,7 @@ class TestExample(NIOBlockTestCase):
         # should have blacklisted the one incoming signal attribute
         self.assertDictEqual(
             self.last_notified[DEFAULT_TERMINAL][0].to_dict(),
-            {'goodbye': 'n.io'})
+            {})
 
     def test_extra_attributes_multiple_whitelist(self):
         """specified attributes that aren't in the signal should result in
@@ -139,14 +139,14 @@ class TestExample(NIOBlockTestCase):
         self.configure_block(blk, {'specify_behavior': 'WHITELIST',
                                    'specify_attributes': ['test', 'yo']})
         blk.start()
-        blk.process_signals([Signal({'goodbye': 'n.io'})])
+        blk.process_signals([Signal({'test': 'n.io'})])
         blk.stop()
         self.assert_num_signals_notified(1)
 
         # should have blacklisted the one incoming signal attribute
         self.assertDictEqual(
             self.last_notified[DEFAULT_TERMINAL][0].to_dict(),
-            {'goodbye': 'n.io'})
+            {'test': 'n.io'})
 
     def test_extra_attributes_multiple_blacklist(self):
         """specified attributes that aren't in the signal should result in
