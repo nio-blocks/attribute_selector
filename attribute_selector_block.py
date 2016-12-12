@@ -49,7 +49,7 @@ class AttributeSelector(Block):
 
             if self.specify_behavior() is Behavior.WHITELIST:
 
-                if len(specified_items) == len(self._specify_items):
+                if len(specified_items) < len(self._specify_items):
                     self.logger.warning(
                         'specified an attribute that is not in the '
                         'incoming signal: {}'.format(
