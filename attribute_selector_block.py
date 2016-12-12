@@ -54,9 +54,13 @@ class AttributeSelector(Block):
             if self.specify_behavior().value:
                 # if true, whitelist behavior
                 self.logger.debug('whitelisting...')
+
+                popitems = []
                 for item in sig_dict:
                     if item not in specified_items:
-                        sig_dict.pop(item)
+                        popitems.append(item)
+                for item in popitems:
+                    sig_dict.pop(item)
 
                 self.logger.debug('Allowing incoming attributes: {}'
                                   .format(sig_dict))
@@ -64,6 +68,7 @@ class AttributeSelector(Block):
             elif not self.specify_behavior().value:
                 # if false, blacklist behavior
                 self.logger.debug('blacklisting...')
+                
                 for item in specified_items:
                     sig_dict.pop(item)
 
