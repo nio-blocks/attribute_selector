@@ -31,24 +31,41 @@ class TestExample(NIOBlockTestCase):
         blk.stop()
         self.assert_num_signals_notified(1)
 
-        # should have blacklisted the one incoming signal attribute
         self.assertDictEqual(
             self.last_notified[DEFAULT_TERMINAL][0].to_dict(),
             {'hello': 'n.io'})
 
-    def test_no_attributes_specified(self):
-        """all signals pass through the block unmodified."""
+    def test_no_attributes_specified_blacklist(self):
+        """if no attributes are specified with blacklist behavior, expect
+        original signal
+        """
         blk = AttributeSelector()
-        self.configure_block(blk, {})
+        self.configure_block(blk, {'specify_behavior': 'BLACKLIST',
+                                   'specify_attributes': []})
         blk.start()
         blk.process_signals([Signal({'hello': 'n.io'})])
         blk.stop()
         self.assert_num_signals_notified(1)
 
-        # should have blacklisted the one incoming signal attribute
         self.assertDictEqual(
             self.last_notified[DEFAULT_TERMINAL][0].to_dict(),
             {'hello': 'n.io'})
+
+    def test_no_attributes_specified_whitelist(self):
+        """if no attributes are specified with whitelist behavior, expect
+        blank signal
+        """
+        blk = AttributeSelector()
+        self.configure_block(blk, {'specify_behavior': 'WHITELIST',
+                                   'specify_attributes': []})
+        blk.start()
+        blk.process_signals([Signal({'hello': 'n.io'})])
+        blk.stop()
+        self.assert_num_signals_notified(1)
+
+        self.assertDictEqual(
+            self.last_notified[DEFAULT_TERMINAL][0].to_dict(),
+            {})
 
     def test_hidden_attributes_blacklist(self):
         """make sure hidden attributes also work, blacklist"""
@@ -78,11 +95,11 @@ class TestExample(NIOBlockTestCase):
         # should have blacklisted the one incoming signal attribute
         self.assertDictEqual(
             self.last_notified[DEFAULT_TERMINAL][0].to_dict(include_hidden=True),
-            {'goodbye': 'n.io'})
+            {'_hello': 'n.io'})
 
     def test_extra_attributes_blacklist(self):
-        """specified attributes that aren't in the signal shouldnt affect
-        blacklist
+        """specified attributes that aren't in the signal should result in the
+        original signal
         """
         blk = AttributeSelector()
         self.configure_block(blk, {'specify_behavior': 'BLACKLIST',
@@ -98,8 +115,8 @@ class TestExample(NIOBlockTestCase):
             {'goodbye': 'n.io'})
 
     def test_extra_attributes_whitelist(self):
-        """specified attributes that aren't in the signal should result in whitelist
-        not putting any attributes on the signal.
+        """specified attributes that aren't in the signal should result in the
+        original signal
         """
         blk = AttributeSelector()
         self.configure_block(blk, {'specify_behavior': 'WHITELIST',
@@ -112,4 +129,38 @@ class TestExample(NIOBlockTestCase):
         # should have blacklisted the one incoming signal attribute
         self.assertDictEqual(
             self.last_notified[DEFAULT_TERMINAL][0].to_dict(),
-            {})
+            {'goodbye': 'n.io'})
+
+    def test_extra_attributes_multiple_whitelist(self):
+        """specified attributes that aren't in the signal should result in
+        the original signal
+        """
+        blk = AttributeSelector()
+        self.configure_block(blk, {'specify_behavior': 'WHITELIST',
+                                   'specify_attributes': ['test', 'yo']})
+        blk.start()
+        blk.process_signals([Signal({'goodbye': 'n.io'})])
+        blk.stop()
+        self.assert_num_signals_notified(1)
+
+        # should have blacklisted the one incoming signal attribute
+        self.assertDictEqual(
+            self.last_notified[DEFAULT_TERMINAL][0].to_dict(),
+            {'goodbye': 'n.io'})
+
+    def test_extra_attributes_multiple_blacklist(self):
+        """specified attributes that aren't in the signal should result in
+        the original signal
+        """
+        blk = AttributeSelector()
+        self.configure_block(blk, {'specify_behavior': 'BLACKLIST',
+                                   'specify_attributes': ['test', 'yo']})
+        blk.start()
+        blk.process_signals([Signal({'goodbye': 'n.io'})])
+        blk.stop()
+        self.assert_num_signals_notified(1)
+
+        # should have blacklisted the one incoming signal attribute
+        self.assertDictEqual(
+            self.last_notified[DEFAULT_TERMINAL][0].to_dict(),
+            {'goodbye': 'n.io'})
