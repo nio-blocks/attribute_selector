@@ -47,11 +47,12 @@ class AttributeSelector(Block):
             sig_dict = signal.to_dict(include_hidden=True)
             specified_items = set(list(sig_dict.keys())).intersection(self._specify_items)
 
-            if len(specified_items) > 0:
+            if len(specified_items) == len(self._specify_items):
                 if self.specify_behavior() is Behavior.WHITELIST:
                     self.logger.debug('whitelisting...')
 
-                    new_sig = Signal({attr: sig_dict[attr] for attr in specified_items})
+                    new_sig = Signal({attr: sig_dict[attr] for attr in
+                                      specified_items})
 
                     self.logger.debug('Allowing incoming attributes: {}'
                                       .format(specified_items))
@@ -67,9 +68,10 @@ class AttributeSelector(Block):
 
                 new_sigs.append(new_sig)
             else:
-                self.logger.warning('Did not specify an attribute or specified '
-                                    'an attribute that is not in the incoming '
-                                    'signal. Notifying the original signal.')
+                self.logger.warning('specified an attribute that is not in the '
+                                    'incoming signal: {} Notifying the original '
+                                    'signal.'
+                                    .format(self._specify_items.difference(specified_items)))
 
                 new_sigs.append(signal)
 
