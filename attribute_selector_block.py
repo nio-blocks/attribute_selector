@@ -2,17 +2,13 @@ from enum import Enum
 
 from nio.signal.base import Signal
 from nio.block.base import Block
-from nio.properties import (VersionProperty, SelectProperty, ListProperty,
-                            Property, PropertyHolder)
+from nio.properties import VersionProperty, SelectProperty, ListProperty
+from nio.types import StringType
 
 
 class Behavior(Enum):
     BLACKLIST = False
     WHITELIST = True
-
-
-class SpecItem(PropertyHolder):
-    item = Property(title='Attribute')
 
 
 class AttributeSelector(Block):
@@ -29,56 +25,46 @@ class AttributeSelector(Block):
     version = VersionProperty('1.0.0')
     specify_behavior = SelectProperty(Behavior, title='Specify behavior',
                                       default=Behavior.BLACKLIST)
-    specify_attributes = ListProperty(SpecItem,
+    specify_attributes = ListProperty(StringType,
                                       title='Incoming signal attributes',
                                       default=[])
 
     def __init__(self):
-        self._specify_items = None
         super().__init__()
+        self._specify_items = None
 
-    def start(self):
-        self._specify_items = set(spec.item() for spec in
+    def configure(self, context):
+        super().configure(context)
+        self._specify_items = set(spec for spec in
                                   self.specify_attributes())
-        super().start()
 
     def process_signals(self, signals):
         self.logger.debug('specifying these attributes: {}'
                           .format(self._specify_items))
 
-        for index, signal in enumerate(signals):
+        new_sigs = []
+        for signal in signals:
             sig_dict = signal.to_dict()
-
             specified_items = set(list(sig_dict.keys())).intersection(self._specify_items)
 
-            if self.specify_behavior().value:
-                # if true, whitelist behavior
+            if self.specify_behavior() is Behavior.WHITELIST:
                 self.logger.debug('whitelisting...')
 
-                popitems = []
-                for item in sig_dict:
-                    if item not in specified_items:
-                        popitems.append(item)
-                for item in popitems:
-                    sig_dict.pop(item)
+                new_sig = Signal({attr: sig_dict[attr] for attr in specified_items})
 
                 self.logger.debug('Allowing incoming attributes: {}'
                                   .format(sig_dict))
 
-            elif not self.specify_behavior().value:
-                # if false, blacklist behavior
+            if self.specify_behavior() is Behavior.BLACKLIST:
                 self.logger.debug('blacklisting...')
 
-                for item in specified_items:
-                    sig_dict.pop(item)
+                new_sig = Signal({attr: sig_dict[attr] for attr in sig_dict
+                                  if attr not in specified_items})
 
                 self.logger.debug('Ignoring incoming attributes: {}'
                                   .format(specified_items))
-            else:
-                self.logger.debug('invalid behavior type')
-                return
 
             # replace signal with a signal minus the bad attributes
-            signals[index] = Signal(sig_dict)
+            new_sigs.append(new_sig)
 
-        self.notify_signals(signals)
+        self.notify_signals(new_sigs)
