@@ -1,11 +1,13 @@
-Example
-===========
+attribute_selector
+==================
 
-What does this block do?
+This block is used to whitelist or blacklist incoming signal attributes and notify 
+the resulting modified signals.
 
 Properties
 --------------
-None
+-  specify_behavior: specify whitelist or blacklist behavior
+-  specify_attributes: specify any incoming signal attributes to ignore or allow depending on specified behavior
 
 Dependencies
 ----------------
@@ -21,4 +23,4 @@ Any list of signals.
 
 Output
 ---------
-Same list of signals as input.
+The input list of signals but with modified attributes.
