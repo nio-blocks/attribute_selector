@@ -53,9 +53,9 @@ class AttributeSelector(Block):
                 new_sig = Signal({attr: sig_dict[attr] for attr in specified_items})
 
                 self.logger.debug('Allowing incoming attributes: {}'
-                                  .format(sig_dict))
+                                  .format(new_sig.to_dict(include_hidden=True)))
 
-            if self.specify_behavior() is Behavior.BLACKLIST:
+            elif self.specify_behavior() is Behavior.BLACKLIST:
                 self.logger.debug('blacklisting...')
 
                 new_sig = Signal({attr: sig_dict[attr] for attr in sig_dict
@@ -64,7 +64,6 @@ class AttributeSelector(Block):
                 self.logger.debug('Ignoring incoming attributes: {}'
                                   .format(specified_items))
 
-            # replace signal with a signal minus the bad attributes
             new_sigs.append(new_sig)
 
         self.notify_signals(new_sigs)
