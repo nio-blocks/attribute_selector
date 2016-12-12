@@ -47,23 +47,30 @@ class AttributeSelector(Block):
             sig_dict = signal.to_dict(include_hidden=True)
             specified_items = set(list(sig_dict.keys())).intersection(self._specify_items)
 
-            if self.specify_behavior() is Behavior.WHITELIST:
-                self.logger.debug('whitelisting...')
+            if len(specified_items) > 0:
+                if self.specify_behavior() is Behavior.WHITELIST:
+                    self.logger.debug('whitelisting...')
 
-                new_sig = Signal({attr: sig_dict[attr] for attr in specified_items})
+                    new_sig = Signal({attr: sig_dict[attr] for attr in specified_items})
 
-                self.logger.debug('Allowing incoming attributes: {}'
-                                  .format(new_sig.to_dict(include_hidden=True)))
+                    self.logger.debug('Allowing incoming attributes: {}'
+                                      .format(specified_items))
 
-            elif self.specify_behavior() is Behavior.BLACKLIST:
-                self.logger.debug('blacklisting...')
+                elif self.specify_behavior() is Behavior.BLACKLIST:
+                    self.logger.debug('blacklisting...')
 
-                new_sig = Signal({attr: sig_dict[attr] for attr in sig_dict
-                                  if attr not in specified_items})
+                    new_sig = Signal({attr: sig_dict[attr] for attr in sig_dict
+                                      if attr not in specified_items})
 
-                self.logger.debug('Ignoring incoming attributes: {}'
-                                  .format(specified_items))
+                    self.logger.debug('Ignoring incoming attributes: {}'
+                                      .format(specified_items))
 
-            new_sigs.append(new_sig)
+                new_sigs.append(new_sig)
+            else:
+                self.logger.warning('Did not specify an attribute or specified '
+                                    'an attribute that is not in the incoming '
+                                    'signal. Notifying the original signal.')
+
+                new_sigs.append(signal)
 
         self.notify_signals(new_sigs)
