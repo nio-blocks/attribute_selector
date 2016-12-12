@@ -68,7 +68,7 @@ class AttributeSelector(Block):
             elif not self.specify_behavior().value:
                 # if false, blacklist behavior
                 self.logger.debug('blacklisting...')
-                
+
                 for item in specified_items:
                     sig_dict.pop(item)
 
