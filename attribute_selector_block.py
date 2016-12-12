@@ -15,14 +15,15 @@ class SpecItem(PropertyHolder):
     item = Property(title='Attribute')
 
 
-class IgnoreSignals(Block):
+class AttributeSelector(Block):
     """
     A block for whitelisting or blacklisting incoming signals and notifying
     the rest.
 
     Properties:
     specify_behavior(select): select either whitelist or blacklist behavior
-    specify_attributes(list): list of incoming signal attributes to ignore
+    specify_attributes(list): list of incoming signal attributes to blacklist
+                              or whitelist
     """
 
     version = VersionProperty('1.0.0')
@@ -42,7 +43,9 @@ class IgnoreSignals(Block):
         super().start()
 
     def process_signals(self, signals):
-        self.logger.debug('self._specify_items: {}'.format(self._specify_items))
+        self.logger.debug('specifying these attributes: {}'
+                          .format(self._specify_items))
+
         for index, signal in enumerate(signals):
             sig_dict = signal.to_dict()
 
@@ -51,15 +54,16 @@ class IgnoreSignals(Block):
             if self.specify_behavior().value:
                 # if true, whitelist behavior
                 self.logger.debug('whitelisting...')
-
                 for item in sig_dict:
                     if item not in specified_items:
                         sig_dict.pop(item)
 
+                self.logger.debug('Allowing incoming attributes: {}'
+                                  .format(sig_dict))
+
             elif not self.specify_behavior().value:
                 # if false, blacklist behavior
                 self.logger.debug('blacklisting...')
-
                 for item in specified_items:
                     sig_dict.pop(item)
 
