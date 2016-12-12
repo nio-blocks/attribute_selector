@@ -44,7 +44,7 @@ class AttributeSelector(Block):
 
         new_sigs = []
         for signal in signals:
-            sig_dict = signal.to_dict()
+            sig_dict = signal.to_dict(include_hidden=True)
             specified_items = set(list(sig_dict.keys())).intersection(self._specify_items)
 
             if self.specify_behavior() is Behavior.WHITELIST:
