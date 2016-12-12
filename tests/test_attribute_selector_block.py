@@ -10,24 +10,24 @@ class TestExample(NIOBlockTestCase):
         """The 'hello' signal attribute will get blacklisted"""
         blk = AttributeSelector()
         self.configure_block(blk, {'specify_behavior': 'BLACKLIST',
-                                   'specify_attributes': [{'item': 'hello'}]})
+                                   'specify_attributes': ['hello']})
         blk.start()
-        blk.process_signals([Signal({"hello": "n.io"})])
+        blk.process_signals([Signal({'hello': 'n.io', 'goodbye': 'n.io'})])
         blk.stop()
         self.assert_num_signals_notified(1)
 
-        # should have blacklisted the one incoming signal attribute
+        # should have blacklisted just hello
         self.assertDictEqual(
             self.last_notified[DEFAULT_TERMINAL][0].to_dict(),
-            {})
+            {'goodbye': 'n.io'})
 
     def test_whitelist_signals(self):
         """'hello' attribute passes through the block unmodified."""
         blk = AttributeSelector()
         self.configure_block(blk, {'specify_behavior': 'WHITELIST',
-                                   'specify_attributes': [{'item': 'hello'}]})
+                                   'specify_attributes': ['hello']})
         blk.start()
-        blk.process_signals([Signal({"hello": "n.io"})])
+        blk.process_signals([Signal({'hello': 'n.io', 'goodbye': 'n.io'})])
         blk.stop()
         self.assert_num_signals_notified(1)
 
@@ -41,7 +41,7 @@ class TestExample(NIOBlockTestCase):
         blk = AttributeSelector()
         self.configure_block(blk, {})
         blk.start()
-        blk.process_signals([Signal({"hello": "n.io"})])
+        blk.process_signals([Signal({'hello': 'n.io'})])
         blk.stop()
         self.assert_num_signals_notified(1)
 
