@@ -17,51 +17,49 @@ class AttributeSelector(Block):
     the rest.
 
     Properties:
-    specify_behavior(select): select either whitelist or blacklist behavior
-    specify_attributes(list): list of incoming signal attributes to blacklist
+    mode(select): select either whitelist or blacklist behavior
+    attributes(list): list of incoming signal attributes to blacklist
                               or whitelist
     """
 
     version = VersionProperty('1.0.0')
-    specify_behavior = SelectProperty(Behavior, title='Specify behavior',
-                                      default=Behavior.BLACKLIST)
-    specify_attributes = ListProperty(StringType,
-                                      title='Incoming signal attributes',
-                                      default=[])
+    mode = SelectProperty(Behavior, title='Selector Mode',
+                          default=Behavior.BLACKLIST)
+    attributes = ListProperty(StringType,
+                              title='Incoming signal attributes',
+                              default=[])
 
     def process_signals(self, signals):
         new_sigs = []
         for signal in signals:
             sig_dict = signal.to_dict(include_hidden=True)
-            specify_items = set(spec for spec in
-                                self.specify_attributes(signal))
-            specified_items = set(list(sig_dict.keys())).intersection(
-                specify_items)
+            attributes = set(spec for spec in self.attributes(signal))
+            keep_attributes = set(sig_dict.keys()).intersection(attributes)
 
-            if self.specify_behavior() is Behavior.WHITELIST:
+            if self.mode() is Behavior.WHITELIST:
+                self.logger.debug('whitelisting...')
 
-                if len(specified_items) < len(specify_items):
+                if len(keep_attributes) < len(attributes):
                     self.logger.warning(
                         'specified an attribute that is not in the '
                         'incoming signal: {}'.format(
-                            specify_items.difference(specified_items)))
+                            attributes.difference(keep_attributes)))
 
-                self.logger.debug('whitelisting...')
 
                 new_sig = Signal({attr: sig_dict[attr] for attr in
-                                  specified_items})
+                                  keep_attributes})
 
                 self.logger.debug('Allowing incoming attributes: {}'
-                                  .format(specified_items))
+                                  .format(keep_attributes))
 
-            elif self.specify_behavior() is Behavior.BLACKLIST:
+            elif self.mode() is Behavior.BLACKLIST:
                 self.logger.debug('blacklisting...')
 
                 new_sig = Signal({attr: sig_dict[attr] for attr in sig_dict
-                                  if attr not in specified_items})
+                                  if attr not in keep_attributes})
 
                 self.logger.debug('Ignoring incoming attributes: {}'
-                                  .format(specified_items))
+                                  .format(keep_attributes))
 
             new_sigs.append(new_sig)
 
