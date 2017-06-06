@@ -1,0 +1,7 @@
+{
+  "nio/AttributeSelector": {
+    "Version": "1.0.0",
+    "Language": "Python",
+    "Reference": "github.com/nio-blocks/attribute_selector.git@v1.0.0"
+  }
+}
