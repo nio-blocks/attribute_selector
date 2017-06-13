@@ -1,25 +1,26 @@
 {
-  "nio/AttributeSelector": {
-    "Description": "This block is used to whitelist or blacklist incoming signal attributes and notify\nthe resulting modified signals.",
-    "Category": "SignalModifier",
-    "Dependencies": [
-      "None"
-    ],
-    "Output": "The input list of signals but with modified attributes.",
-    "Commands": {},
-    "Version": "1.0.0",
-    "Miscellaneous": {
-      "Whitelist:": "The block will only emit those signals that are specified in the config.\nIf a specified attribute doesn't exist in the signal, it is ignored.\nIf only invalid attributes are specified, a blank signal is notified.",
-      "Blacklist:": "The block will emit all incoming attributes besides those specified in the\nconfig. If a specified attribute doesn't exist in the signal, it is ignored.\nIf only invalid attributes are specified, the original signal is notified."
-    },
-    "Properties": {
-      "Specify behavior": {
-        "description": "specify whitelist or blacklist behavior"
-      },
-      "Incoming signal attributes": {
-        "description": "specify any incoming signal attributes to ignore or allow depending on specified behavior"
-      }
-    },
-    "Input": "Any list of signals."
-  }
+    "nio/AttributeSelector": {
+        "Properties": {
+            "Incoming signal attributes": {
+                "description": "specify any incoming signal attributes to ignore or allow depending on specified behavior"
+            },
+            "Specify behavior": {
+                "description": "specify whitelist or blacklist behavior"
+            }
+        },
+        "Output": {
+            "Description": "The input list of signals but with modified attributes."
+        },
+        "Commands": {},
+        "Input": {
+            "Description": "Any list of signals."
+        },
+        "Miscellaneous": {
+            "Whitelist:": "The block will only emit those signals that are specified in the config.\nIf a specified attribute doesn't exist in the signal, it is ignored.\nIf only invalid attributes are specified, a blank signal is notified.",
+            "Blacklist:": "The block will emit all incoming attributes besides those specified in the\nconfig. If a specified attribute doesn't exist in the signal, it is ignored.\nIf only invalid attributes are specified, the original signal is notified."
+        },
+        "Category": "SignalModifier",
+        "Description": "This block is used to whitelist or blacklist incoming signal attributes and notify\nthe resulting modified signals.",
+        "Version": "1.0.0"
+    }
 }
