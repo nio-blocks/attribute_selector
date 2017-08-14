@@ -74,8 +74,10 @@ class TestExample(NIOBlockTestCase):
         self.assert_num_signals_notified(1)
         # should have blacklisted the one incoming signal attribute
         self.assertDictEqual(
-            self.last_notified[DEFAULT_TERMINAL][0].to_dict(include_hidden=True),
-            {'goodbye': 'n.io'})
+            self.last_notified[DEFAULT_TERMINAL][0].to_dict(
+                include_hidden=True),
+            {'goodbye': 'n.io'}
+        )
 
     def test_hidden_attributes_whitelist(self):
         """make sure hidden attributes also work, whitelist"""
@@ -88,8 +90,10 @@ class TestExample(NIOBlockTestCase):
         self.assert_num_signals_notified(1)
         # should have blacklisted the one incoming signal attribute
         self.assertDictEqual(
-            self.last_notified[DEFAULT_TERMINAL][0].to_dict(include_hidden=True),
-            {'_hello': 'n.io'})
+            self.last_notified[DEFAULT_TERMINAL][0].to_dict(
+                include_hidden=True),
+            {'_hello': 'n.io'}
+        )
 
     def test_extra_attributes_blacklist(self):
         """specified attributes that aren't in the signal should result in the
