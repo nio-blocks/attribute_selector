@@ -45,7 +45,6 @@ class AttributeSelector(Block):
                         'incoming signal: {}'.format(
                             attributes.difference(keep_attributes)))
 
-
                 new_sig = Signal({attr: sig_dict[attr] for attr in
                                   keep_attributes})
 
