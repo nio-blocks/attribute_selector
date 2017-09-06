@@ -2,6 +2,9 @@
   "nio/AttributeSelector": {
     "version": "1.0.0",
     "description": "This block is used to whitelist or blacklist incoming signal attributes and notify the resulting modified signals.",
+    "categories": [
+      "Signal Modifier"
+    ],
     "properties": {
       "attributes": {
         "title": "Incoming signal attributes",
