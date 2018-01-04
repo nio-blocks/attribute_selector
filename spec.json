@@ -1,7 +1,7 @@
 {
   "nio/AttributeSelector": {
     "version": "1.0.0",
-    "description": "This block is used to whitelist or blacklist incoming signal attributes and notify the resulting modified signals.",
+    "description": "The AttributeSelector block is used to whitelist or blacklist incoming signal attributes. Whitelisted attributes will be included in or blacklisted attributes will be excluded from the outgoing signal.",
     "categories": [
       "Signal Modifier"
     ],
@@ -9,7 +9,7 @@
       "attributes": {
         "title": "Incoming signal attributes",
         "type": "ListType",
-        "description": "Specify any incoming signal attributes to ignore or allow depending on specified behavior.",
+        "description": "Incoming signal attributes to either include or exclude, depending on whether whitelist or blacklist is chosen as the **selector mode**.",
         "default": []
       },
       "mode": {
@@ -26,7 +26,7 @@
     },
     "outputs": {
       "default": {
-        "description": "The input list of signals but with modified attributes depending on whitelist/blacklist selections."
+        "description": "The incoming list of signals but with attributes modified according to the whitelist/blacklist selections."
       }
     },
     "commands": {}
