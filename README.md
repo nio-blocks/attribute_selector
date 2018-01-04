@@ -1,10 +1,10 @@
 AttributeSelector
 =================
-The AttributeSelector block is used to whitelist or blacklist incoming signal attributes. The block will alter the signal based on which attributes are allowed and emit the modified signal.
+The AttributeSelector block is used to whitelist or blacklist incoming signal attributes. Whitelisted attributes will be included in or blacklisted attributes will be excluded from the outgoing signal.
 
 Properties
 ----------
-- **attributes**: Incoming signal attributes to ignore or allow depending on whether whitelist or blacklist is chosen as the Selector Mode.
+- **attributes**: Incoming signal attributes to either include or exclude, depending on whether whitelist or blacklist is chosen as the **selector mode**.
 - **mode**: Specify whitelist or blacklist behavior.
 
 Inputs
@@ -13,7 +13,7 @@ Inputs
 
 Outputs
 -------
-- **default**: The input list of signals but with modified attributes depending on whitelist/blacklist selections.
+- **default**: The incoming list of signals but with attributes modified according to the whitelist/blacklist selections.
 
 Commands
 --------
