@@ -22,7 +22,7 @@ class AttributeSelector(Block):
                               or whitelist
     """
 
-    version = VersionProperty("1.0.1")
+    version = VersionProperty("1.1.0")
     mode = SelectProperty(Behavior, title='Selector Mode',
                           default=Behavior.BLACKLIST, order=0)
     attributes = ListProperty(StringType,
