@@ -24,10 +24,10 @@ class AttributeSelector(Block):
 
     version = VersionProperty("1.0.1")
     mode = SelectProperty(Behavior, title='Selector Mode',
-                          default=Behavior.BLACKLIST)
+                          default=Behavior.BLACKLIST, order=0)
     attributes = ListProperty(StringType,
                               title='Incoming signal attributes',
-                              default=[])
+                              default=[], order=1)
 
     def process_signals(self, signals):
         new_sigs = []
