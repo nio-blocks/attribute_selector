@@ -26,7 +26,7 @@ class AttributeSelector(Block):
     mode = SelectProperty(Behavior, title='Selector Mode',
                           default=Behavior.BLACKLIST, order=0)
     attributes = ListProperty(StringType,
-                              title='Incoming signal attributes',
+                              title='Incoming Signal Attributes',
                               default=[], order=1)
 
     def process_signals(self, signals):
