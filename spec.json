@@ -5,30 +5,8 @@
     "categories": [
       "Signal Modifier"
     ],
-    "properties": {
-      "attributes": {
-        "title": "Incoming signal attributes",
-        "type": "ListType",
-        "description": "Incoming signal attributes to either include or exclude, depending on whether whitelist or blacklist is chosen as the **selector mode**.",
-        "default": []
-      },
-      "mode": {
-        "title": "Selector Mode",
-        "type": "SelectType",
-        "description": "Specify whitelist or blacklist behavior.",
-        "default": false
-      }
-    },
-    "inputs": {
-      "default": {
-        "description": "Any list of signals"
-      }
-    },
-    "outputs": {
-      "default": {
-        "description": "The incoming list of signals but with attributes modified according to the whitelist/blacklist selections."
-      }
-    },
-    "commands": {}
+    "tags": "black list white block limit blacklist whitelist allow disallow",
+    "from_readme": "docs/attribute_selector.md",
+    "from_python": "attribute_selector_block.AttributeSelector"
   }
 }
